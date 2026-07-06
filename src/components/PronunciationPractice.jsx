@@ -103,6 +103,8 @@ export default function PronunciationPractice() {
             <audio controls src={audioUrl} style={{ height: 32 }} />
           </div>
         )}
+
+        <div className="privacy-note">録音した声はこの端末内(ブラウザ)だけで再生され、どこにも送信・保存されません。次の単語に進む、またはタブを閉じると自動的に破棄されます。</div>
       </div>
 
       <button className="link-btn" onClick={nextWord}>
