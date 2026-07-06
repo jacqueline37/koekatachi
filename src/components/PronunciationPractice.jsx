@@ -74,29 +74,36 @@ export default function PronunciationPractice() {
         </svg>
       </div>
 
-      <div className="button-row">
-        <button className="icon-ghost-btn" onClick={() => speak(word.h)}>
-          <Volume2 size={18} /> お手本を聞く
-        </button>
-        {!recording ? (
-          <button className="record-btn" onClick={startRecording}>
-            <Mic size={18} /> 録音する
+      <div className="compare-panel">
+        <div className="compare-row">
+          <span className="compare-label">お手本</span>
+          <button className="icon-ghost-btn" onClick={() => speak(word.h)}>
+            <Volume2 size={18} /> 聞く
           </button>
-        ) : (
-          <button className="record-btn" style={{ background: "#E06B5A" }} onClick={stopRecording}>
-            <Square size={16} /> 停止
-          </button>
+        </div>
+
+        <div className="compare-row">
+          <span className="compare-label">あなたの録音</span>
+          {!recording ? (
+            <button className="record-btn" onClick={startRecording}>
+              <Mic size={18} /> 録音する
+            </button>
+          ) : (
+            <button className="record-btn" style={{ background: "#E06B5A" }} onClick={stopRecording}>
+              <Square size={16} /> 停止
+            </button>
+          )}
+        </div>
+
+        {micError && <div className="error-text">{micError}</div>}
+
+        {audioUrl && (
+          <div className="compare-row">
+            <span className="compare-label">聞き比べ</span>
+            <audio controls src={audioUrl} style={{ height: 32 }} />
+          </div>
         )}
       </div>
-
-      {micError && <div className="error-text">{micError}</div>}
-
-      {audioUrl && (
-        <div className="recorded-row">
-          <span className="muted">あなたの録音:</span>
-          <audio controls src={audioUrl} style={{ height: 32 }} />
-        </div>
-      )}
 
       <button className="link-btn" onClick={nextWord}>
         <RotateCcw size={14} style={{ marginRight: 4 }} /> 次の単語へ

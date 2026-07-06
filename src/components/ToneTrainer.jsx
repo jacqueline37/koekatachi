@@ -10,6 +10,7 @@ function pickRandom() {
 export default function ToneTrainer() {
   const [word, setWord] = useState(pickRandom);
   const [result, setResult] = useState(null);
+  const [picked, setPicked] = useState(null);
   const [stats, setStats] = useState(() => storage.get("tone-trainer-stats") || { correct: 0, total: 0, streak: 0, best: 0 });
 
   useEffect(() => {
@@ -19,11 +20,13 @@ export default function ToneTrainer() {
   function next() {
     setWord(pickRandom());
     setResult(null);
+    setPicked(null);
   }
 
   function choose(tone) {
     if (result) return;
     const isCorrect = tone === word.t;
+    setPicked(tone);
     setResult(isCorrect ? "correct" : "wrong");
     setStats((s) => {
       const streak = isCorrect ? s.streak + 1 : 0;
@@ -48,18 +51,24 @@ export default function ToneTrainer() {
       </div>
 
       <div className="tone-grid">
-        {[1, 2, 3, 4].map((t) => (
-          <button
-            key={t}
-            onClick={() => choose(t)}
-            disabled={!!result}
-            className="tone-option"
-            style={{ borderColor: result && t === word.t ? TONE_COLORS[t] : undefined, background: result && t === word.t ? `${TONE_COLORS[t]}22` : undefined }}
-          >
-            <ToneGlyph tone={t} size={34} />
-            <span className="tone-option-label">{TONE_LABELS[t]}</span>
-          </button>
-        ))}
+        {[1, 2, 3, 4].map((t) => {
+          const isAnswer = result && t === word.t;
+          const isWrongPick = result === "wrong" && t === picked;
+          const color = isAnswer ? TONE_COLORS[t] : isWrongPick ? "#E06B5A" : undefined;
+          return (
+            <button
+              key={t}
+              onClick={() => choose(t)}
+              disabled={!!result}
+              className="tone-option"
+              style={{ borderColor: color, background: color ? `${color}22` : undefined }}
+            >
+              <ToneGlyph tone={t} size={34} />
+              <span className="tone-option-label">{TONE_LABELS[t]}</span>
+              {isWrongPick && <span className="tone-option-flag">あなたの回答</span>}
+            </button>
+          );
+        })}
       </div>
 
       {result && (
