@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Volume2, Check, X } from "lucide-react";
-import ToneGlyph from "./ToneGlyph.jsx";
-import { WORDS, TONE_COLORS, BOX_INTERVALS, speak, storage, todayStr, addDays } from "../data.js";
+import { ToneGlyphRow } from "./ToneGlyph.jsx";
+import { WORDS, TONE_COLORS, BOX_INTERVALS, speak, storage, todayStr, addDays, toneList, pinyinSyllables, wordLevel } from "../data.js";
 
 export default function Flashcards() {
   const [srs, setSrs] = useState(() => storage.get("srs-state") || {});
@@ -70,10 +70,15 @@ export default function Flashcards() {
           <div className="flashcard" onClick={() => setFlipped((f) => !f)}>
             {!flipped ? (
               <>
+                <span className="level-badge">レベル{wordLevel(current)}</span>
                 <div className="hanzi-big">{current.h}</div>
                 <div className="pinyin-row">
-                  <span style={{ color: TONE_COLORS[current.t], fontWeight: 700 }}>{current.p}</span>
-                  <ToneGlyph tone={current.t} size={26} active />
+                  {pinyinSyllables(current).map((syl, i) => (
+                    <span key={i} style={{ color: TONE_COLORS[toneList(current)[i]], fontWeight: 700 }}>
+                      {syl}
+                    </span>
+                  ))}
+                  <ToneGlyphRow tones={toneList(current)} size={26} active />
                 </div>
                 <div className="tap-hint">タップして意味を表示</div>
               </>

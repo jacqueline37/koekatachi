@@ -52,7 +52,37 @@ export const WORDS = [
   { h: "虫", p: "chóng", t: 2, m: "虫" },
   { h: "懂", p: "dǒng", t: 3, m: "わかる" },
   { h: "重", p: "zhòng", t: 4, m: "重い" },
+
+  { h: "你好", p: "nǐ hǎo", t: [3, 3], m: "こんにちは", level: 2 },
+  { h: "谢谢", p: "xiè xie", t: [4, 4], m: "ありがとう", level: 2 },
+  { h: "再见", p: "zài jiàn", t: [4, 4], m: "さようなら", level: 2 },
+  { h: "中国", p: "zhōng guó", t: [1, 2], m: "中国", level: 2 },
+  { h: "日本", p: "rì běn", t: [4, 3], m: "日本", level: 2 },
+  { h: "学校", p: "xué xiào", t: [2, 4], m: "学校", level: 2 },
+  { h: "老师", p: "lǎo shī", t: [3, 1], m: "先生", level: 2 },
+  { h: "天气", p: "tiān qì", t: [1, 4], m: "天気", level: 2 },
+  { h: "电影", p: "diàn yǐng", t: [4, 3], m: "映画", level: 2 },
+  { h: "火车", p: "huǒ chē", t: [3, 1], m: "電車・列車", level: 2 },
+  { h: "飞机", p: "fēi jī", t: [1, 1], m: "飛行機", level: 2 },
+  { h: "汉语", p: "hàn yǔ", t: [4, 3], m: "中国語", level: 2 },
+  { h: "英语", p: "yīng yǔ", t: [1, 3], m: "英語", level: 2 },
+  { h: "银行", p: "yín háng", t: [2, 2], m: "銀行", level: 2 },
+  { h: "咖啡", p: "kā fēi", t: [1, 1], m: "コーヒー", level: 2 },
+  { h: "苹果", p: "píng guǒ", t: [2, 3], m: "りんご", level: 2 },
+  { h: "手机", p: "shǒu jī", t: [3, 1], m: "携帯電話", level: 2 },
 ];
+
+export function wordLevel(word) {
+  return word.level ?? 1;
+}
+
+export function toneList(word) {
+  return Array.isArray(word.t) ? word.t : [word.t];
+}
+
+export function pinyinSyllables(word) {
+  return word.p.split(" ");
+}
 
 export const BOX_INTERVALS = [0, 1, 3, 7]; // ボックス番号 -> 次回復習までの日数
 

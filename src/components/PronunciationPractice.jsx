@@ -1,6 +1,16 @@
 import React, { useState, useRef } from "react";
 import { Volume2, Mic, Square, RotateCcw } from "lucide-react";
-import { WORDS, TONE_COLORS, TONE_PATHS, speak } from "../data.js";
+import { WORDS, TONE_COLORS, TONE_PATHS, speak, toneList, pinyinSyllables, wordLevel } from "../data.js";
+
+function scaledTonePath(tone) {
+  return TONE_PATHS[tone]
+    .replace(/M(\d+),(\d+)/, (m, x, y) => `M${x * 3},${y * 1.2}`)
+    .replace(
+      /C([\d.]+),([\d.]+) ([\d.]+),([\d.]+) ([\d.]+),([\d.]+)/,
+      (m, a, b, c, d, e, f) => `C${a * 3},${b * 1.2} ${c * 3},${d * 1.2} ${e * 3},${f * 1.2}`
+    )
+    .replace(/L([\d.]+),([\d.]+)/, (m, x, y) => `L${x * 3},${y * 1.2}`);
+}
 
 export default function PronunciationPractice() {
   const [word, setWord] = useState(WORDS[0]);
@@ -51,27 +61,27 @@ export default function PronunciationPractice() {
   return (
     <div className="panel">
       <div className="card">
+        <span className="level-badge">レベル{wordLevel(word)}</span>
         <div className="hanzi-big">{word.h}</div>
         <div className="pinyin-row">
-          <span style={{ color: TONE_COLORS[word.t], fontWeight: 700, fontSize: 20 }}>{word.p}</span>
+          {pinyinSyllables(word).map((syl, i) => (
+            <span key={i} style={{ color: TONE_COLORS[toneList(word)[i]], fontWeight: 700, fontSize: 20 }}>
+              {syl}
+            </span>
+          ))}
         </div>
         <div className="muted">{word.m}</div>
       </div>
 
       <div className="contour-reference">
         <span className="muted">お手本のかたち</span>
-        <svg width="140" height="60" viewBox="0 0 140 60">
-          <path
-            d={TONE_PATHS[word.t]
-              .replace(/M(\d+),(\d+)/, (m, x, y) => `M${x * 3},${y * 1.2}`)
-              .replace(/C([\d.]+),([\d.]+) ([\d.]+),([\d.]+) ([\d.]+),([\d.]+)/, (m, a, b, c, d, e, f) => `C${a * 3},${b * 1.2} ${c * 3},${d * 1.2} ${e * 3},${f * 1.2}`)
-              .replace(/L([\d.]+),([\d.]+)/, (m, x, y) => `L${x * 3},${y * 1.2}`)}
-            fill="none"
-            stroke={TONE_COLORS[word.t]}
-            strokeWidth="4"
-            strokeLinecap="round"
-          />
-        </svg>
+        <div style={{ display: "flex", gap: 12 }}>
+          {toneList(word).map((tone, i) => (
+            <svg key={i} width="140" height="60" viewBox="0 0 140 60">
+              <path d={scaledTonePath(tone)} fill="none" stroke={TONE_COLORS[tone]} strokeWidth="4" strokeLinecap="round" />
+            </svg>
+          ))}
+        </div>
       </div>
 
       <div className="compare-panel">

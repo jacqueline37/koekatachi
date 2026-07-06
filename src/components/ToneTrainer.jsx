@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Volume2, Check, X, Flame } from "lucide-react";
 import ToneGlyph from "./ToneGlyph.jsx";
-import { WORDS, TONE_COLORS, TONE_LABELS, speak, storage } from "../data.js";
+import { WORDS, TONE_COLORS, TONE_LABELS, speak, storage, wordLevel } from "../data.js";
+
+const LEVEL1_WORDS = WORDS.filter((w) => wordLevel(w) === 1);
 
 function pickRandom() {
-  return WORDS[Math.floor(Math.random() * WORDS.length)];
+  return LEVEL1_WORDS[Math.floor(Math.random() * LEVEL1_WORDS.length)];
 }
 
 export default function ToneTrainer() {

@@ -237,6 +237,16 @@ button:focus-visible {
   gap: 8px;
 }
 
+.level-badge {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 2px 10px;
+}
+
 .play-btn {
   width: 44px;
   height: 44px;

@@ -20,3 +20,13 @@ export default function ToneGlyph({ tone, size = 40, active = false, dim = false
     </svg>
   );
 }
+
+export function ToneGlyphRow({ tones, size = 26, active = false }) {
+  return (
+    <div style={{ display: "flex", gap: 6 }}>
+      {tones.map((tone, i) => (
+        <ToneGlyph key={i} tone={tone} size={size} active={active} />
+      ))}
+    </div>
+  );
+}
