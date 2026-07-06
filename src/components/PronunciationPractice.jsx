@@ -13,7 +13,10 @@ export default function PronunciationPractice() {
   function nextWord() {
     const others = WORDS.filter((w) => w.h !== word.h);
     setWord(others[Math.floor(Math.random() * others.length)]);
-    setAudioUrl(null);
+    setAudioUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
     setMicError(null);
   }
 
@@ -26,7 +29,10 @@ export default function PronunciationPractice() {
       mr.ondataavailable = (e) => chunksRef.current.push(e.data);
       mr.onstop = () => {
         const blob = new Blob(chunksRef.current, { type: "audio/webm" });
-        setAudioUrl(URL.createObjectURL(blob));
+        setAudioUrl((prev) => {
+          if (prev) URL.revokeObjectURL(prev);
+          return URL.createObjectURL(blob);
+        });
         stream.getTracks().forEach((t) => t.stop());
       };
       mediaRecorderRef.current = mr;

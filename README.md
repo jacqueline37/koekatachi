@@ -28,18 +28,18 @@ git add .
 git commit -m "Initial commit"
 ```
 
-GitHub上に新しいリポジトリ(例: `koe-katachi`)を作成したら:
+GitHub上に新しいリポジトリ(例: `koekatachi`)を作成したら:
 
 ```bash
 git branch -M main
-git remote add origin https://github.com/<あなたのユーザー名>/koe-katachi.git
+git remote add origin https://github.com/<あなたのユーザー名>/koekatachi.git
 git push -u origin main
 ```
 
 ## GitHub Pagesで公開する
 
 `vite.config.js` の `base` は、リポジトリ名に合わせてください。
-リポジトリ名を `koe-katachi` にする場合はそのままでOKです。
+リポジトリ名を `koekatachi` にする場合はそのままでOKです。
 別の名前にする場合は `base: "/別の名前/"` に書き換えてください。
 (`<ユーザー名>.github.io` という名前のリポジトリで公開する場合は `base: "/"` にしてください。)
 
@@ -50,7 +50,7 @@ git push -u origin main
 2. "Build and deployment" の **Source** を **GitHub Actions** に設定
 3. `main` ブランチに push すると自動でビルド・公開される
 
-数分後、`https://<あなたのユーザー名>.github.io/koe-katachi/` でアクセスできます。
+数分後、`https://<あなたのユーザー名>.github.io/koekatachi/` でアクセスできます。
 
 ### 手動でデプロイする場合(Actionsを使わない方法)
 
@@ -64,7 +64,7 @@ npm run deploy
 ## フォルダ構成
 
 ```
-koe-katachi/
+koekatachi/
 ├─ src/
 │  ├─ components/
 │  │  ├─ ToneGlyph.jsx          声調の輪郭アイコン
