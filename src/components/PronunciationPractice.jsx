@@ -1,6 +1,7 @@
 import React, { useState, useRef } from "react";
 import { Volume2, Mic, Square, RotateCcw } from "lucide-react";
-import { WORDS, TONE_COLORS, TONE_PATHS, speak, toneList, pinyinSyllables, wordLevel } from "../data.js";
+import { WORDS, TONE_COLORS, TONE_PATHS, speak, toneList, pinyinSyllables, wordLevel, wordMeaning } from "../data.js";
+import { useLanguage } from "../i18n.jsx";
 
 function scaledTonePath(tone) {
   return TONE_PATHS[tone]
@@ -13,6 +14,7 @@ function scaledTonePath(tone) {
 }
 
 export default function PronunciationPractice() {
+  const { t, lang } = useLanguage();
   const [word, setWord] = useState(WORDS[0]);
   const [recording, setRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
@@ -49,7 +51,7 @@ export default function PronunciationPractice() {
       mr.start();
       setRecording(true);
     } catch (e) {
-      setMicError("マイクにアクセスできませんでした。ブラウザの権限設定を確認してください。");
+      setMicError(t("micError"));
     }
   }
 
@@ -61,7 +63,7 @@ export default function PronunciationPractice() {
   return (
     <div className="panel">
       <div className="card">
-        <span className="level-badge">レベル{wordLevel(word)}</span>
+        <span className="level-badge">{t("level", wordLevel(word))}</span>
         <div className="hanzi-big">{word.h}</div>
         <div className="pinyin-row">
           {pinyinSyllables(word).map((syl, i) => (
@@ -70,11 +72,11 @@ export default function PronunciationPractice() {
             </span>
           ))}
         </div>
-        <div className="muted">{word.m}</div>
+        <div className="muted">{wordMeaning(word, lang)}</div>
       </div>
 
       <div className="contour-reference">
-        <span className="muted">お手本のかたち</span>
+        <span className="muted">{t("referenceShape")}</span>
         <div style={{ display: "flex", gap: 12 }}>
           {toneList(word).map((tone, i) => (
             <svg key={i} width="140" height="60" viewBox="0 0 140 60">
@@ -86,21 +88,21 @@ export default function PronunciationPractice() {
 
       <div className="compare-panel">
         <div className="compare-row">
-          <span className="compare-label">お手本</span>
+          <span className="compare-label">{t("reference")}</span>
           <button className="icon-ghost-btn" onClick={() => speak(word.h)}>
-            <Volume2 size={18} /> 聞く
+            <Volume2 size={18} /> {t("listen")}
           </button>
         </div>
 
         <div className="compare-row">
-          <span className="compare-label">あなたの録音</span>
+          <span className="compare-label">{t("yourRecording")}</span>
           {!recording ? (
             <button className="record-btn" onClick={startRecording}>
-              <Mic size={18} /> 録音する
+              <Mic size={18} /> {t("record")}
             </button>
           ) : (
             <button className="record-btn" style={{ background: "#E06B5A" }} onClick={stopRecording}>
-              <Square size={16} /> 停止
+              <Square size={16} /> {t("stop")}
             </button>
           )}
         </div>
@@ -109,16 +111,16 @@ export default function PronunciationPractice() {
 
         {audioUrl && (
           <div className="compare-row">
-            <span className="compare-label">聞き比べ</span>
+            <span className="compare-label">{t("compare")}</span>
             <audio controls src={audioUrl} style={{ height: 32 }} />
           </div>
         )}
 
-        <div className="privacy-note">録音した声はこの端末内(ブラウザ)だけで再生され、どこにも送信・保存されません。次の単語に進む、またはタブを閉じると自動的に破棄されます。</div>
+        <div className="privacy-note">{t("privacyNote")}</div>
       </div>
 
       <button className="link-btn" onClick={nextWord}>
-        <RotateCcw size={14} style={{ marginRight: 4 }} /> 次の単語へ
+        <RotateCcw size={14} style={{ marginRight: 4 }} /> {t("nextWord")}
       </button>
     </div>
   );

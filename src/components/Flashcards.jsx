@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Volume2, Check, X } from "lucide-react";
 import { ToneGlyphRow } from "./ToneGlyph.jsx";
-import { WORDS, TONE_COLORS, BOX_INTERVALS, speak, storage, todayStr, addDays, toneList, pinyinSyllables, wordLevel } from "../data.js";
+import { WORDS, TONE_COLORS, BOX_INTERVALS, speak, storage, todayStr, addDays, toneList, pinyinSyllables, wordLevel, wordMeaning } from "../data.js";
+import { useLanguage } from "../i18n.jsx";
 
 export default function Flashcards() {
+  const { t, lang } = useLanguage();
   const [srs, setSrs] = useState(() => storage.get("srs-state") || {});
   const [queue, setQueue] = useState([]);
   const [idx, setIdx] = useState(0);
@@ -52,17 +54,17 @@ export default function Flashcards() {
   return (
     <div className="panel">
       <div className="row-between">
-        <div className="muted">{showAllMode ? `全 ${WORDS.length} 枚を復習中` : `今日の復習: 残り ${queue.length} 枚`}</div>
+        <div className="muted">{showAllMode ? t("reviewingAll", WORDS.length) : t("reviewToday", queue.length)}</div>
         <button className="link-btn" onClick={() => setShowAllMode((v) => !v)}>
-          {showAllMode ? "今日の分だけ表示" : "全カードを復習"}
+          {showAllMode ? t("showTodayOnly") : t("reviewAllCards")}
         </button>
       </div>
 
       {!current ? (
         <div className="empty-state">
-          <div style={{ fontSize: 15, marginBottom: 8 }}>今日の復習分は終わりました 🎉</div>
+          <div style={{ fontSize: 15, marginBottom: 8 }}>{t("doneToday")}</div>
           <button className="primary-btn" onClick={() => setShowAllMode(true)}>
-            もっと復習する
+            {t("reviewMore")}
           </button>
         </div>
       ) : (
@@ -70,7 +72,7 @@ export default function Flashcards() {
           <div className="flashcard" onClick={() => setFlipped((f) => !f)}>
             {!flipped ? (
               <>
-                <span className="level-badge">レベル{wordLevel(current)}</span>
+                <span className="level-badge">{t("level", wordLevel(current))}</span>
                 <div className="hanzi-big">{current.h}</div>
                 <div className="pinyin-row">
                   {pinyinSyllables(current).map((syl, i) => (
@@ -80,11 +82,11 @@ export default function Flashcards() {
                   ))}
                   <ToneGlyphRow tones={toneList(current)} size={26} active />
                 </div>
-                <div className="tap-hint">タップして意味を表示</div>
+                <div className="tap-hint">{t("tapToShow")}</div>
               </>
             ) : (
               <>
-                <div className="meaning-big">{current.m}</div>
+                <div className="meaning-big">{wordMeaning(current, lang)}</div>
                 <div className="muted">
                   {current.h} · {current.p}
                 </div>
@@ -100,17 +102,17 @@ export default function Flashcards() {
                 speak(current.h);
               }}
             >
-              <Volume2 size={18} /> 発音
+              <Volume2 size={18} /> {t("pronunciationBtn")}
             </button>
           </div>
 
           {flipped && (
             <div className="grade-row">
               <button className="grade-btn" style={{ borderColor: "#E06B5A" }} onClick={() => grade(false)}>
-                <X size={16} color="#E06B5A" /> わからない
+                <X size={16} color="#E06B5A" /> {t("dontKnow")}
               </button>
               <button className="grade-btn" style={{ borderColor: "#4FB897" }} onClick={() => grade(true)}>
-                <Check size={16} color="#4FB897" /> わかる
+                <Check size={16} color="#4FB897" /> {t("know")}
               </button>
             </div>
           )}

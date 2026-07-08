@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Volume2, Check, X, Flame } from "lucide-react";
 import ToneGlyph from "./ToneGlyph.jsx";
-import { WORDS, TONE_COLORS, TONE_LABELS, speak, storage, wordLevel } from "../data.js";
+import { WORDS, TONE_COLORS, speak, storage, wordLevel, wordMeaning } from "../data.js";
+import { useLanguage } from "../i18n.jsx";
 
 const LEVEL1_WORDS = WORDS.filter((w) => wordLevel(w) === 1);
 
@@ -10,6 +11,7 @@ function pickRandom() {
 }
 
 export default function ToneTrainer() {
+  const { t, lang } = useLanguage();
   const [word, setWord] = useState(pickRandom);
   const [result, setResult] = useState(null);
   const [picked, setPicked] = useState(null);
@@ -39,35 +41,35 @@ export default function ToneTrainer() {
   return (
     <div className="panel">
       <div className="stat-row">
-        <StatChip label="正解率" value={stats.total ? `${Math.round((stats.correct / stats.total) * 100)}%` : "—"} />
-        <StatChip label="連続正解" value={stats.streak} icon={<Flame size={14} color="#E0A83E" />} />
-        <StatChip label="ベスト" value={stats.best} />
+        <StatChip label={t("accuracy")} value={stats.total ? `${Math.round((stats.correct / stats.total) * 100)}%` : "—"} />
+        <StatChip label={t("streak")} value={stats.streak} icon={<Flame size={14} color="#E0A83E" />} />
+        <StatChip label={t("best")} value={stats.best} />
       </div>
 
       <div className="card">
-        <button className="play-btn" onClick={() => speak(word.h)} aria-label="発音を聞く">
+        <button className="play-btn" onClick={() => speak(word.h)} aria-label={t("listenAria")}>
           <Volume2 size={22} />
         </button>
         <div className="hanzi-big">{word.h}</div>
-        <div className="muted">聞こえた声調を選んでください</div>
+        <div className="muted">{t("selectTonePrompt")}</div>
       </div>
 
       <div className="tone-grid">
-        {[1, 2, 3, 4].map((t) => {
-          const isAnswer = result && t === word.t;
-          const isWrongPick = result === "wrong" && t === picked;
-          const color = isAnswer ? TONE_COLORS[t] : isWrongPick ? "#E06B5A" : undefined;
+        {[1, 2, 3, 4].map((tone) => {
+          const isAnswer = result && tone === word.t;
+          const isWrongPick = result === "wrong" && tone === picked;
+          const color = isAnswer ? TONE_COLORS[tone] : isWrongPick ? "#E06B5A" : undefined;
           return (
             <button
-              key={t}
-              onClick={() => choose(t)}
+              key={tone}
+              onClick={() => choose(tone)}
               disabled={!!result}
               className="tone-option"
               style={{ borderColor: color, background: color ? `${color}22` : undefined }}
             >
-              <ToneGlyph tone={t} size={34} />
-              <span className="tone-option-label">{TONE_LABELS[t]}</span>
-              {isWrongPick && <span className="tone-option-flag">あなたの回答</span>}
+              <ToneGlyph tone={tone} size={34} />
+              <span className="tone-option-label">{t(`toneLabels.${tone}`)}</span>
+              {isWrongPick && <span className="tone-option-flag">{t("yourAnswer")}</span>}
             </button>
           );
         })}
@@ -78,16 +80,16 @@ export default function ToneTrainer() {
           <div className="feedback-text" style={{ color: result === "correct" ? "#4FB897" : "#E06B5A" }}>
             {result === "correct" ? (
               <>
-                <Check size={16} /> 正解！ {word.p}（{word.m}）
+                <Check size={16} /> {t("correct")} {word.p}（{wordMeaning(word, lang)}）
               </>
             ) : (
               <>
-                <X size={16} /> 正解は 第{word.t}声 — {word.p}（{word.m}）
+                <X size={16} /> {t("wrongAnswer", word.t)} {word.p}（{wordMeaning(word, lang)}）
               </>
             )}
           </div>
           <button className="primary-btn" onClick={next}>
-            次へ
+            {t("next")}
           </button>
         </div>
       )}
